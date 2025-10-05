@@ -32,8 +32,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
 security = HTTPBearer()
 
-mongo_url = os.environ.get('MONGO_URL', 'mongodb+srv://serkanakmese_db_user:Kaderaglariniordubugece.3423@servisformu.idsf5wm.mongodb.net/?retryWrites=true&w=majority&appName=servisformu'
-)
+# MongoDB connection
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/servis_formu')
 client = AsyncIOMotorClient(mongo_url)
 db = client['servis_formu']
 
@@ -459,6 +459,23 @@ async def update_smtp_settings(settings: SMTPSettingsUpdate, admin: User = Depen
     )
     
     return {"message": "SMTP ayarları test edildi ve başarıyla kaydedildi", "test_passed": True}
+
+# Logo endpoint - Frontend'den logo base64 almak için
+@api_router.get("/logo")
+async def get_logo():
+    """Logo'yu base64 format olarak döndür"""
+    try:
+        logo_path = ROOT_DIR / "logo.png"
+        if logo_path.exists():
+            with open(logo_path, "rb") as f:
+                logo_data = f.read()
+                logo_base64 = base64.b64encode(logo_data).decode('utf-8')
+                return {"logo": f"data:image/png;base64,{logo_base64}"}
+        else:
+            raise HTTPException(status_code=404, detail="Logo dosyası bulunamadı")
+    except Exception as e:
+        logging.error(f"Logo yüklenemedi: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Logo yüklenemedi: {str(e)}")
 
 # Email endpoint
 @api_router.post("/send-email")

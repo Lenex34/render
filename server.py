@@ -33,8 +33,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 security = HTTPBearer()
 
 # MongoDB connection
-mongo_url = os.environ.get('MONGO_URL', 'mongodb+srv://serkanakmese_db_user:Kaderaglariniordubugece.3423@servisformu.idsf5wm.mongodb.net/?retryWrites=true&w=majority&appName=servisformu'
-)
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/servis_formu')
 client = AsyncIOMotorClient(mongo_url)
 db = client['servis_formu']
 
